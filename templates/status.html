@@ -1,85 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Test Labor Michael</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 30mm;
-      width: 210mm;
-      height: 297mm;
-      font-family: Arial, sans-serif;
-      box-sizing: border-box;
-    }
-    h1 {
-      color: purple;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 30px;
-    }
-    th, td {
-      padding: 12px;
-      border-bottom: 2px solid #333;
-      vertical-align: top;
-    }
-    th {
-      text-align: left;
-    }
-    .status {
-      font-weight: bold;
-      padding: 6px 12px;
-      border-radius: 4px;
-      display: inline-block;
-    }
-    .status.pending {
-      background-color: orange;
-      color: black;
-    }
-    .status.done {
-      background-color: forestgreen;
-      color: white;
-    }
-  </style>
-</head>
+<!doctype html>
+<html lang="de">
+<head><meta charset="UTF-8"><title>Status Übersicht</title></head>
 <body>
-  <h1>TEST LABOR MICHAEL</h1>
-
-  <table>
-    <tr>
-      <th>ORDER ID</th>
-      <th>DATE</th>
-      <th>ROUTER</th>
-      <th>FW</th>
-      <th>RUNS</th>
-      <th>STATUS</th>
-      <th>REPORT</th>
-    </tr>
+  <h1>Status Übersicht</h1>
+  <ul>
     {% for item in items %}
-    <tr>
-      <td>{{ item.order_id }}</td>
-      <td>{{ item.date }}</td>
-      <td>{{ item.router }}</td>
-      <td>{{ item.fw }}</td>
-      <td>
-        {% for run in item.runs %}
-          {{ run }}<br>
-        {% endfor %}
-      </td>
-      <td>
-        <span class="status {% if 'DONE' in item.status or 'SUCCESS' in item.status %}done{% else %}pending{% endif %}">
-          {{ item.status }}
-        </span>
-      </td>
-      <td>
-        {% if item.report %}
-          <a href="{{ item.report }}" target="_blank">link... open here</a>
-        {% endif %}
-      </td>
-    </tr>
+    <li>
+      <strong>{{ item.date }}</strong> – Router: {{ item.router }} – Status: {{ item.status }}
+      {% if item.report %}
+        <a href="{{ item.report }}" target="_blank">[PDF]</a>
+      {% endif %}
+    </li>
     {% endfor %}
-  </table>
+  </ul>
+  <a href="/admin">Zur Admin-Oberfläche</a>
 </body>
 </html>

@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: status-report
+    name: meine-status-page
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app

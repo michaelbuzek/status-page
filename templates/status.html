@@ -1,18 +1,1 @@
-<!doctype html>
-<html lang="de">
-<head><meta charset="UTF-8"><title>Status Übersicht</title></head>
-<body>
-  <h1>Status Übersicht</h1>
-  <ul>
-    {% for item in items %}
-    <li>
-      <strong>{{ item.date }}</strong> – Router: {{ item.router }} – Status: {{ item.status }}
-      {% if item.report %}
-        <a href="{{ item.report }}" target="_blank">[PDF]</a>
-      {% endif %}
-    </li>
-    {% endfor %}
-  </ul>
-  <a href="/admin">Zur Admin-Oberfläche</a>
-</body>
-</html>
+<html><body><h1>Status</h1><a href='/admin'>Admin</a></body></html>

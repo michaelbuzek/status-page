@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+
 auftrag_bp = Blueprint('auftrag', __name__)
 
 @auftrag_bp.route('/auftrag', methods=['POST'])

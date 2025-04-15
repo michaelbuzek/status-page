@@ -1,4 +1,3 @@
-# version 19-30 final clean
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 import json
 import os
@@ -9,17 +8,13 @@ from auftrag import auftrag_bp
 from event_status_update import status_bp
 
 app = Flask(__name__)
-
-# PostgreSQL für Render
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://meineapiuser:gk2u1YcUpTDkqVlhZY0U0qAtGcBWxXcD@dpg-cvrvbcur433s73eaj0k0-a.oregon-postgres.render.com/meineapidb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
-
 with app.app_context():
     db.create_all()
 
-# Blueprints
 app.register_blueprint(api_bp)
 app.register_blueprint(auftrag_bp)
 app.register_blueprint(status_bp)
@@ -96,4 +91,43 @@ def api_get_orders():
     return jsonify(data), 200
 
 @app.route("/api/add", methods=["POST"])
-def api_add_
+def api_add_order():
+    req_data = request.get_json()
+    required_fields = ["order_id", "date", "router", "fw", "runs"]
+    if not all(field in req_data for field in required_fields):
+        return jsonify({"error": "Missing fields"}), 400
+
+    data = load_data()
+    new_order = {
+        "order_id": req_data["order_id"],
+        "date": req_data["date"],
+        "router": req_data["router"],
+        "fw": req_data["fw"],
+        "status": "PENDING",
+        "runs": req_data["runs"],
+        "report": req_data.get("report", "")
+    }
+    data.append(new_order)
+    save_data(data)
+    return jsonify({"message": "Order added"}), 201
+
+@app.route("/api/delete", methods=["DELETE"])
+def api_delete_order():
+    req_data = request.get_json()
+    order_id = str(req_data.get("order_id"))
+    data = load_data()
+    new_data = [item for item in data if str(item.get("order_id")) != order_id]
+    if len(new_data) == len(data):
+        return jsonify({"error": "Item not found"}), 404
+    save_data(new_data)
+    return jsonify({"message": "Order deleted"}), 200
+
+@app.route("/delete/<order_id>", methods=["GET"])
+def delete_order_admin(order_id):
+    data = load_data()
+    data = [item for item in data if str(item["order_id"]) != str(order_id)]
+    save_data(data)
+    return redirect("/admin")
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)

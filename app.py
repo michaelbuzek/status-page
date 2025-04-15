@@ -1,4 +1,4 @@
-# version 08:43
+# version 18-30 version
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 import json
 import os
@@ -23,6 +23,7 @@ with app.app_context():
 # Blueprints registrieren
 app.register_blueprint(api_bp)
 app.register_blueprint(auftrag_bp)
+app.register_blueprint(status_bp)
 
 DATA_FILE = "data.json"
 

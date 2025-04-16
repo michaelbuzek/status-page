@@ -33,13 +33,16 @@ def save_data(data):
 
 @app.route("/")
 def index():
-    data = load_data()
-    return render_template("status.html", items=data)
+    from models import TriggerEvent
+    items = TriggerEvent.query.order_by(TriggerEvent.execute_at.asc()).all()
+    return render_template("status.html", items=items)
 
-@app.route("/admin", methods=["GET"])
+@app.route("/admin")
 def admin():
-    data = load_data()
-    return render_template("admin.html", items=data)
+    from models import TriggerEvent
+    items = TriggerEvent.query.order_by(TriggerEvent.execute_at.asc()).all()
+    return render_template("admin.html", items=items)
+
 
 @app.route("/add", methods=["POST"])
 def add_order():

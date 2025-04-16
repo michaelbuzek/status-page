@@ -1,1 +1,34 @@
-<html><body><h1>Status</h1><a href='/admin'>Admin</a></body></html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Status</title>
+</head>
+<body>
+    <h1>Status</h1>
+    <a href="/admin">Admin</a>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+            <th>ID</th>
+            <th>Typ</th>
+            <th>Router</th>
+            <th>Setup</th>
+            <th>Firmware</th>
+            <th>Geplant</th>
+            <th>Status</th>
+            <th>Report</th>
+        </tr>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.type }}</td>
+            <td>{{ item.router }}</td>
+            <td>{{ item.setup }}</td>
+            <td>{{ item.firmware }}</td>
+            <td>{{ item.execute_at }}</td>
+            <td>{{ item.status }}</td>
+            <td><a href="{{ item.report_url }}">{{ item.report_url }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

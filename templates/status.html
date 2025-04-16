@@ -1,79 +1,48 @@
 <!DOCTYPE html>
-<html lang="de">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Status Übersicht</title>
+    <title>Status</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-        }
-        h1 {
-            color: rebeccapurple;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 25px;
-        }
-        th, td {
-            border: 1px solid #333;
-            padding: 6px 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #eee;
-        }
-        a {
-            color: rebeccapurple;
-            font-weight: bold;
-        }
-        .status-open {
-            background-color: sandybrown;
-        }
-        .status-done {
-            background-color: lightgreen;
-        }
+        body { font-family: Arial, sans-serif; padding: 30px; }
+        h1 { color: purple; }
+        a { font-weight: bold; color: purple; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+        th { background-color: #eee; }
+        .status-open { background-color: sandybrown; }
+        .status-done { background-color: lightgreen; }
     </style>
 </head>
 <body>
-
     <h1>TEST LAB</h1>
     <h2>Status Dashboard</h2>
     <hr>
     <p><a href="/admin">Admin</a></p>
-
     <table>
         <tr>
-            <th>ID</th>
             <th>Auftrag</th>
-            <th>Typ</th>
             <th>Router</th>
             <th>Setup</th>
             <th>Firmware</th>
-            <th>Geplant</th>
             <th>Setup-Check</th>
             <th>FW-Download</th>
             <th>Run-Test</th>
             <th>Status</th>
             <th>Report</th>
         </tr>
-        {% for event in events %}
+        {% for aid, data in auftraege.items() %}
         <tr>
-            <td>{{ event.id }}</td>
-            <td>{{ event.auftrag_id }}</td>
-            <td>{{ event.type }}</td>
-            <td>{{ event.router }}</td>
-            <td>{{ event.setup }}</td>
-            <td>{{ event.firmware }}</td>
-            <td>{{ event.execute_at }}</td>
-            <td>{{ event.setup_check_at }}</td>
-            <td>{{ event.fw_download_at }}</td>
-            <td>{{ event.run_test_at }}</td>
-            <td class="status-{{ event.status }}">{{ event.status }}</td>
+            <td>{{ data.auftrag_id }}</td>
+            <td>{{ data.router }}</td>
+            <td>{{ data.setup }}</td>
+            <td>{{ data.firmware }}</td>
+            <td>{{ data.times.get('setup-check') }}</td>
+            <td>{{ data.times.get('fw-download') }}</td>
+            <td>{{ data.times.get('run-test') }}</td>
+            <td class="status-{{ data.status }}">{{ data.status }}</td>
             <td>
-                {% if event.report_url %}
-                    <a href="{{ event.report_url }}" target="_blank">Report</a>
+                {% if data.report_url %}
+                    <a href="{{ data.report_url }}" target="_blank">Report</a>
                 {% else %}
                     None
                 {% endif %}
@@ -81,6 +50,5 @@
         </tr>
         {% endfor %}
     </table>
-
 </body>
 </html>

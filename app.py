@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from models import db
+from models import db, TriggerEvent
 from api import api_bp
 from auftrag import auftrag_bp
 from event_status_update import status_bp
@@ -22,11 +22,14 @@ app.register_blueprint(status_bp)
 
 @app.route("/")
 def index():
-    return render_template("status.html")
+    items = TriggerEvent.query.order_by(TriggerEvent.execute_at).all()
+    return render_template("status.html", items=items)
 
 @app.route("/admin")
 def admin():
-    return render_template("admin.html")
+    items = TriggerEvent.query.order_by(TriggerEvent.execute_at).all()
+    return render_template("admin.html", items=items)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

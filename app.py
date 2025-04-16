@@ -23,12 +23,13 @@ app.register_blueprint(status_bp)
 @app.route("/")
 def index():
     events = TriggerEvent.query.order_by(TriggerEvent.execute_at.asc()).all()
-    return render_template("status.html", items=events)
+    return render_template("status.html", events=events)
 
 @app.route("/admin")
 def admin():
-    items = TriggerEvent.query.order_by(TriggerEvent.execute_at).all()
-    return render_template("admin.html", items=items)
+    events = TriggerEvent.query.order_by(TriggerEvent.execute_at).all()
+    return render_template("admin.html", events=events)
+
 
 
 if __name__ == "__main__":

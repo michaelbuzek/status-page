@@ -1,17 +1,11 @@
-<!DOCTYPE html>
 <html>
 <head>
     <title>Status</title>
-    <style>
-        table, th, td { border: 1px solid black; border-collapse: collapse; padding: 5px; }
-        th { background-color: #f2f2f2; }
-    </style>
 </head>
 <body>
     <h1>Status</h1>
-    <a href="/admin"><strong>Admin</strong></a>
-    <br><br>
-    <table>
+    <a href="/admin">Admin</a>
+    <table border="1">
         <tr>
             <th>ID</th>
             <th>Auftrag</th>
@@ -23,7 +17,7 @@
             <th>Status</th>
             <th>Report</th>
         </tr>
-        {% for event in items %}
+        {% for event in events %}
         <tr>
             <td>{{ event.id }}</td>
             <td>{{ event.auftrag_id }}</td>
@@ -33,13 +27,7 @@
             <td>{{ event.firmware }}</td>
             <td>{{ event.execute_at }}</td>
             <td>{{ event.status }}</td>
-            <td>
-                {% if event.report_url %}
-                    <a href="{{ event.report_url }}" target="_blank">Report</a>
-                {% else %}
-                    None
-                {% endif %}
-            </td>
+            <td>{{ event.report_url or "None" }}</td>
         </tr>
         {% endfor %}
     </table>

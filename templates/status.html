@@ -2,13 +2,38 @@
 <html>
 <head>
     <title>Status</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 6px 10px;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        td {
+            text-align: center;
+        }
+        .header {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        a {
+            font-weight: bold;
+            color: purple;
+        }
+    </style>
 </head>
 <body>
-    <h1>Status</h1>
+    <div class="header">Status</div>
     <a href="/admin">Admin</a>
-    <table border="1">
+    <table>
         <tr>
             <th>ID</th>
+            <th>Auftrag</th>
             <th>Typ</th>
             <th>Router</th>
             <th>Setup</th>
@@ -17,16 +42,23 @@
             <th>Status</th>
             <th>Report</th>
         </tr>
-        {% for item in items %}
+        {% for item in events %}
         <tr>
             <td>{{ item.id }}</td>
+            <td>{{ item.auftrag_id }}</td>
             <td>{{ item.type }}</td>
             <td>{{ item.router }}</td>
             <td>{{ item.setup }}</td>
             <td>{{ item.firmware }}</td>
             <td>{{ item.execute_at }}</td>
             <td>{{ item.status }}</td>
-            <td><a href="{{ item.report_url }}" target="_blank">{{ item.report_url }}</a></td>
+            <td>
+                {% if item.report_url %}
+                    <a href="{{ item.report_url }}" target="_blank">Report</a>
+                {% else %}
+                    None
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </table>

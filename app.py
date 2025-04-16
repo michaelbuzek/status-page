@@ -22,21 +22,13 @@ app.register_blueprint(status_bp)
 
 @app.route("/")
 def index():
-    events = TriggerEvent.query.order_by(TriggerEvent.auftrag_id, TriggerEvent.type).all()
+    events = TriggerEvent.query.order_by(TriggerEvent.execute_at.asc()).all()
+    return render_template("status.html", events=events)
 
-    auftrags_map = {}
-    for event in events:
-        aid = event.auftrag_id
-        if aid not in auftrags_map:
-            auftrags_map[aid] = {
-                "auftrag_id": aid,
-                "router": event.router,
-                "setup": event.setup,
-                "firmware": event.firmware,
-                "times": {},
-                "status": event.status,
-                "report_url": event.report_url
-            }
-        auftrags_map[aid]["times"][event.type] = event.execute_at
+@app.route("/admin")
+def admin():
+    events = TriggerEvent.query.order_by(TriggerEvent.execute_at).all()
+    return render_template("admin.html", events=events)
 
-    return render_template_
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)

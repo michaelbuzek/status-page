@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from models import db, TriggerEvent
 from datetime import datetime
-from timing_config import TIMINGS
+from time_utils import calculate_event_times  # ⬅️ NEU
 
 auftrag_bp = Blueprint('auftrag', __name__)
 
@@ -18,15 +18,15 @@ def auftrag():
         firmware = data["firmware"]
         testsets = data.get("testsets", [])
 
-        event_types = ["setup-check", "fw-download", "run-test"]
-        created = []
+        # ⬇️ Nutze zentrale Berechnungslogik
+        calculated_times = calculate_event_times(base_time)
 
-        for typ in event_types:
-            planned_time = base_time + TIMINGS[typ]
+        created = []
+        for typ, execute_at in calculated_times.items():
             event = TriggerEvent(
                 auftrag_id=auftrag_id,
-                type=typ,
-                execute_at=planned_time,
+                type=typ.replace("_time", ""),  # "setup_check_time" → "setup-check"
+                execute_at=execute_at,
                 setup=setup,
                 firmware=firmware,
                 router=router,
@@ -34,7 +34,7 @@ def auftrag():
                 status="open"
             )
             db.session.add(event)
-            created.append(f"{typ} → {planned_time.strftime('%Y-%m-%d %H:%M:%S')}")
+            created.append(f"{event.type} → {execute_at.strftime('%Y-%m-%d %H:%M:%S')}")
 
         db.session.commit()
         print("[AUFTRAG] Erstellt:", created)

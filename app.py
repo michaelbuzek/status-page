@@ -22,8 +22,8 @@ app.register_blueprint(status_bp)
 
 @app.route("/")
 def index():
-    items = TriggerEvent.query.order_by(TriggerEvent.execute_at).all()
-    return render_template("status.html", items=items)
+    events = TriggerEvent.query.order_by(TriggerEvent.execute_at.asc()).all()
+    return render_template("status.html", items=events)
 
 @app.route("/admin")
 def admin():

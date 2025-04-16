@@ -3,33 +3,14 @@
 <head>
     <title>Status</title>
     <style>
-        table {
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 6px 10px;
-        }
-        th {
-            background-color: #f0f0f0;
-        }
-        td {
-            text-align: center;
-        }
-        .header {
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-        a {
-            font-weight: bold;
-            color: purple;
-        }
+        table, th, td { border: 1px solid black; border-collapse: collapse; padding: 5px; }
+        th { background-color: #f2f2f2; }
     </style>
 </head>
 <body>
-    <div class="header">Status</div>
-    <a href="/admin">Admin</a>
+    <h1>Status</h1>
+    <a href="/admin"><strong>Admin</strong></a>
+    <br><br>
     <table>
         <tr>
             <th>ID</th>
@@ -42,19 +23,19 @@
             <th>Status</th>
             <th>Report</th>
         </tr>
-        {% for item in events %}
+        {% for event in items %}
         <tr>
-            <td>{{ item.id }}</td>
-            <td>{{ item.auftrag_id }}</td>
-            <td>{{ item.type }}</td>
-            <td>{{ item.router }}</td>
-            <td>{{ item.setup }}</td>
-            <td>{{ item.firmware }}</td>
-            <td>{{ item.execute_at }}</td>
-            <td>{{ item.status }}</td>
+            <td>{{ event.id }}</td>
+            <td>{{ event.auftrag_id }}</td>
+            <td>{{ event.type }}</td>
+            <td>{{ event.router }}</td>
+            <td>{{ event.setup }}</td>
+            <td>{{ event.firmware }}</td>
+            <td>{{ event.execute_at }}</td>
+            <td>{{ event.status }}</td>
             <td>
-                {% if item.report_url %}
-                    <a href="{{ item.report_url }}" target="_blank">Report</a>
+                {% if event.report_url %}
+                    <a href="{{ event.report_url }}" target="_blank">Report</a>
                 {% else %}
                     None
                 {% endif %}

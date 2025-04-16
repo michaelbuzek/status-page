@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Status</title>
+    <title>Status Dashboard</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 30px; }
+        body { font-family: Arial; margin: 40px; }
         h1 { color: purple; }
-        a { font-weight: bold; color: purple; }
-        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #999; padding: 8px; text-align: center; }
         th { background-color: #eee; }
-        .status-open { background-color: sandybrown; }
-        .status-done { background-color: lightgreen; }
+        .status-open { background-color: #f4a261; }
+        .status-done { background-color: #8ac926; }
+        a { font-weight: bold; color: purple; }
     </style>
 </head>
 <body>
     <h1>TEST LAB</h1>
     <h2>Status Dashboard</h2>
-    <hr>
-    <p><a href="/admin">Admin</a></p>
+    <a href="/admin">Admin</a>
+
     <table>
         <tr>
             <th>Auftrag</th>
@@ -32,21 +32,17 @@
         </tr>
         {% for aid, data in auftraege.items() %}
         <tr>
-            <td>{{ data.auftrag_id }}</td>
-            <td>{{ data.router }}</td>
-            <td>{{ data.setup }}</td>
-            <td>{{ data.firmware }}</td>
-            <td>{{ data.times.get('setup-check') }}</td>
-            <td>{{ data.times.get('fw-download') }}</td>
-            <td>{{ data.times.get('run-test') }}</td>
-            <td class="status-{{ data.status }}">{{ data.status }}</td>
-            <td>
-                {% if data.report_url %}
-                    <a href="{{ data.report_url }}" target="_blank">Report</a>
-                {% else %}
-                    None
-                {% endif %}
+            <td>{{ aid }}</td>
+            <td>{{ data['run-test'].router if data.get('run-test') else '-' }}</td>
+            <td>{{ data['run-test'].setup if data.get('run-test') else '-' }}</td>
+            <td>{{ data['run-test'].firmware if data.get('run-test') else '-' }}</td>
+            <td>{{ data['setup-check'].execute_at if data.get('setup-check') else '-' }}</td>
+            <td>{{ data['fw-download'].execute_at if data.get('fw-download') else '-' }}</td>
+            <td>{{ data['run-test'].execute_at if data.get('run-test') else '-' }}</td>
+            <td class="status-{{ data['run-test'].status if data.get('run-test') else 'open' }}">
+                {{ data['run-test'].status if data.get('run-test') else 'open' }}
             </td>
+            <td>{{ data['run-test'].report_url if data.get('run-test') else '-' }}</td>
         </tr>
         {% endfor %}
     </table>

@@ -1,16 +1,13 @@
-# version MI 19-40
 from flask import Blueprint, request, jsonify
 from models import db, TriggerEvent
 from datetime import datetime
-from time_utils import calculate_event_times  # ⬅️ NEU
+from timing_config import TIMINGS
 
-auftrag_bp = Blueprint('auftrag', __name__)
+auftrag_bp = Blueprint("auftrag", __name__)
 
-@auftrag_bp.route('/auftrag', methods=['POST'])
+@auftrag_bp.route("/auftrag", methods=["POST"])
 def auftrag():
     data = request.get_json()
-    print(f"[AUFTRAG] Eingehend: {data}")
-
     try:
         base_time = datetime.fromisoformat(data["execute_at"])
         auftrag_id = data["auftrag_id"]
@@ -19,28 +16,26 @@ def auftrag():
         firmware = data["firmware"]
         testsets = data.get("testsets", [])
 
-        # ⬇️ Nutze zentrale Berechnungslogik
-        calculated_times = calculate_event_times(base_time)
-
+        event_types = ["setup-check", "fw-download", "run-test"]
         created = []
-        for typ, execute_at in calculated_times.items():
+
+        for typ in event_types:
+            planned_time = base_time + TIMINGS[typ]
             event = TriggerEvent(
                 auftrag_id=auftrag_id,
-                type=typ.replace("_time", ""),  # "setup_check_time" → "setup-check"
-                execute_at=execute_at,
+                type=typ,
+                execute_at=planned_time,
                 setup=setup,
                 firmware=firmware,
                 router=router,
                 testsets=testsets,
-                status="open"
+                status="open",
             )
             db.session.add(event)
-            created.append(f"{event.type} → {execute_at.strftime('%Y-%m-%d %H:%M:%S')}")
+            created.append(f"{typ} → {planned_time}")
 
         db.session.commit()
-        print("[AUFTRAG] Erstellt:", created)
         return jsonify({"message": "Trigger erstellt", "entries": created}), 201
 
     except Exception as e:
-        print("[AUFTRAG] Fehler:", str(e))
-        return jsonify({"error": "Fehler beim Erstellen", "details": str(e)}), 400
+        return jsonify({"error": str(e)}), 400

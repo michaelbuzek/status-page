@@ -1,40 +1,32 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
-from models import db, TriggerEvent
+from flask import Flask, render_template
+from models import db
+from api import api_bp
+from auftrag import auftrag_bp
+from event_status_update import status_bp
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://meineapiuser:gk2u1YcUpTDkqVlhZY0U0qAtGcBWxXcD@dpg-cvrvbcur433s73eaj0k0-a.oregon-postgres.render.com/meineapidb'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# DB-Verbindung zu Render
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://meineapiuser:gk2u1YcUpTDkqVlhZY0U0qAtGcBWxXcD@dpg-cvrvbcur433s73eaj0k0-a.oregon-postgres.render.com/meineapidb"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 
-@app.route('/')
+with app.app_context():
+    db.create_all()
+
+# Blueprints registrieren
+app.register_blueprint(api_bp)
+app.register_blueprint(auftrag_bp)
+app.register_blueprint(status_bp)
+
+@app.route("/")
 def index():
-    events = TriggerEvent.query.order_by(TriggerEvent.execute_at).all()
-    return render_template('status.html', events=events)
+    return render_template("status.html")
 
-@app.route('/admin')
+@app.route("/admin")
 def admin():
-    events = TriggerEvent.query.order_by(TriggerEvent.execute_at).all()
-    return render_template('admin.html', events=events)
+    return render_template("admin.html")
 
-@app.route('/event-status-update', methods=['POST'])
-def update_status():
-    data = request.get_json()
-    event_id = data.get('event_id')
-    event = TriggerEvent.query.get(event_id)
-    if not event:
-        return jsonify({"error": "Event not found"}), 404
-
-    if 'status' in data:
-        event.status = data['status']
-    if 'result_log' in data:
-        event.result_log = data['result_log']
-    if 'report_url' in data:
-        event.report_url = data['report_url']
-
-    db.session.commit()
-    return jsonify({"message": "Status updated"}), 200
-
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)

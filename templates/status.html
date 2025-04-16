@@ -1,71 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Status Page</title>
+    <title>Status</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-        }
-
-        h1 {
-            color: #8800cc;
-            font-size: 28px;
-            margin-bottom: 0;
-        }
-
-        h2 {
-            font-weight: normal;
-            font-size: 18px;
-            margin-top: 5px;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 5px;
-            display: inline-block;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 25px;
-        }
-
-        th, td {
-            border: 1px solid #333;
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f7f7f7;
-        }
-
-        .status-open {
-            background-color: #f6bd60;
-            font-weight: bold;
-        }
-
-        .status-done {
-            background-color: #a8dadc;
-            font-weight: bold;
-        }
-
-        a {
-            color: purple;
-            font-weight: bold;
-        }
-
-        .report-link {
-            color: blue;
-        }
+        table, th, td { border: 1px solid black; border-collapse: collapse; padding: 5px; }
+        th { background-color: #f2f2f2; }
     </style>
 </head>
 <body>
-    <h1>TEST LAB</h1>
-    <h2>Status Dashboard</h2>
-    <p><a href="/admin">Admin</a></p>
-
+    <h1>Status</h1>
+    <a href="/admin"><strong>Admin</strong></a>
+    <br><br>
     <table>
         <tr>
             <th>ID</th>
@@ -78,7 +23,7 @@
             <th>Status</th>
             <th>Report</th>
         </tr>
-        {% for event in events %}
+        {% for event in items %}
         <tr>
             <td>{{ event.id }}</td>
             <td>{{ event.auftrag_id }}</td>
@@ -87,10 +32,10 @@
             <td>{{ event.setup }}</td>
             <td>{{ event.firmware }}</td>
             <td>{{ event.execute_at }}</td>
-            <td class="status-{{ event.status }}">{{ event.status }}</td>
+            <td>{{ event.status }}</td>
             <td>
                 {% if event.report_url %}
-                    <a href="{{ event.report_url }}" target="_blank" class="report-link">Report</a>
+                    <a href="{{ event.report_url }}" target="_blank">Report</a>
                 {% else %}
                     None
                 {% endif %}

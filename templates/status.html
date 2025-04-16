@@ -1,11 +1,49 @@
-<html>
+<!DOCTYPE html>
+<html lang="de">
 <head>
-    <title>Status</title>
+    <meta charset="UTF-8">
+    <title>Status Übersicht</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        h1 {
+            color: rebeccapurple;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 6px 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #eee;
+        }
+        a {
+            color: rebeccapurple;
+            font-weight: bold;
+        }
+        .status-open {
+            background-color: sandybrown;
+        }
+        .status-done {
+            background-color: lightgreen;
+        }
+    </style>
 </head>
 <body>
-    <h1>Status</h1>
-    <a href="/admin">Admin</a>
-    <table border="1">
+
+    <h1>TEST LAB</h1>
+    <h2>Status Dashboard</h2>
+    <hr>
+    <p><a href="/admin">Admin</a></p>
+
+    <table>
         <tr>
             <th>ID</th>
             <th>Auftrag</th>
@@ -14,6 +52,9 @@
             <th>Setup</th>
             <th>Firmware</th>
             <th>Geplant</th>
+            <th>Setup-Check</th>
+            <th>FW-Download</th>
+            <th>Run-Test</th>
             <th>Status</th>
             <th>Report</th>
         </tr>
@@ -26,10 +67,20 @@
             <td>{{ event.setup }}</td>
             <td>{{ event.firmware }}</td>
             <td>{{ event.execute_at }}</td>
-            <td>{{ event.status }}</td>
-            <td>{{ event.report_url or "None" }}</td>
+            <td>{{ event.setup_check_at }}</td>
+            <td>{{ event.fw_download_at }}</td>
+            <td>{{ event.run_test_at }}</td>
+            <td class="status-{{ event.status }}">{{ event.status }}</td>
+            <td>
+                {% if event.report_url %}
+                    <a href="{{ event.report_url }}" target="_blank">Report</a>
+                {% else %}
+                    None
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </table>
+
 </body>
 </html>

@@ -56,3 +56,23 @@ def delete_auftrag_events(auftrag_id):
         return jsonify({"message": f"Alle Events mit Auftrag-ID {auftrag_id} gelöscht"}), 200
     else:
         return jsonify({"error": "Keine Events mit dieser Auftrag-ID gefunden"}), 404
+
+
+@api_bp.route('/events', methods=['GET'])
+def list_events():
+    events = TriggerEvent.query.order_by(TriggerEvent.auftrag_id, TriggerEvent.execute_at).all()
+    return jsonify([
+        {
+            "id": e.id,
+            "auftrag_id": e.auftrag_id,
+            "type": e.type,
+            "execute_at": e.execute_at.isoformat(),
+            "setup": e.setup,
+            "firmware": e.firmware,
+            "router": e.router,
+            "testsets": e.testsets,
+            "status": e.status,
+            "result_log": e.result_log,
+            "report_url": e.report_url
+        } for e in events
+    ])

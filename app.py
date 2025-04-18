@@ -5,7 +5,8 @@ from auftrag import auftrag_bp
 from event_status_update import status_bp
 from time_utils import gruppiere_events_nach_auftrag
 import json
-from sqlalchemy import text, create_engine
+import psycopg2
+from sqlalchemy import text
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://meineapiuser:gk2u1YcUpTDkqVlhZY0U0qAtGcBWxXcD@dpg-cvrvbcur433s73eaj0k0-a.oregon-postgres.render.com/meineapidb"
@@ -35,35 +36,32 @@ def admin():
 def auftrag_detail(auftrag_id):
     events = TriggerEvent.query.filter_by(auftrag_id=auftrag_id).order_by(TriggerEvent.execute_at).all()
 
-    # Testsets aus JSON laden
+    # Lade testsets.json
     with open("testsets.json", "r") as f:
         testsets_data = json.load(f)
 
-    # Aktive Testsets aus Event herausfinden
+    # Extrahiere gewählte Testsets (nur von run-test Events)
     testset_namen = []
     for e in events:
         if e.type == "run-test" and e.testsets:
             testset_namen = e.testsets
             break
 
-    # Ergebnisse aus DB abrufen
-    engine = create_engine(app.config["SQLALCHEMY_DATABASE_URI"])
-    with engine.connect() as conn:
-        result = conn.execute(
-            text("SELECT case_id, status FROM test_results WHERE auftrag_id = :aid"),
-            {"aid": auftrag_id}
-        )
-        result_map = {row.case_id: row.status for row in result}
+    # Lade Testergebnisse aus Datenbank
+    result_map = {}
+    with db.engine.connect() as conn:
+        result = conn.execute(text("SELECT case_id, status FROM test_results WHERE auftrag_id = :aid"), {"aid": auftrag_id})
+        for row in result:
+            result_map[row.case_id] = row.status
 
-    # Detailstruktur bauen
+    # Erstelle detail-Objekt für die Anzeige
     details = []
-    for setname in testset_namen:
-        cases = testsets_data.get(setname, [])
+    for testset_name in testset_namen:
+        cases = testsets_data.get(testset_name, [])
         for case in cases:
-            if isinstance(case, dict):
-                case["status"] = result_map.get(case["id"], "-")
+            case["status"] = result_map.get(case["id"], "-")  # z. B. "succeeded" oder "-"
         details.append({
-            "name": setname,
+            "name": testset_name,
             "testcases": cases
         })
 

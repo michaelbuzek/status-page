@@ -1,7 +1,8 @@
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Details Auftrag {{ auftrag_id }}</title>
+    <title>Auftrag {{ auftrag_id }}</title>
     <style>
         body { font-family: Arial; margin: 40px; }
         h1 { color: purple; }
@@ -21,12 +22,7 @@
 
     <h2>Testzeitpunkte</h2>
     <table>
-        <tr>
-            <th>Typ</th>
-            <th>Execute At</th>
-            <th>Status</th>
-            <th>Report</th>
-        </tr>
+        <tr><th>Typ</th><th>Execute At</th><th>Status</th><th>Report</th></tr>
         {% for e in events %}
         <tr>
             <td>{{ e.type }}</td>
@@ -38,19 +34,13 @@
     </table>
 
     <h2>Durchgeführte Testsets & Testcases</h2>
-
-    {% for set in details %}
-        <h3>{{ set.name | upper }}</h3>
+    {% for setname, setdata in details.items() %}
+        <h3>{{ setname.upper() }} – {{ setdata.info }}</h3>
         <table>
+            <tr><th>Case ID</th><th>Name</th><th>Beschreibung</th><th>Status</th></tr>
+            {% for case in setdata.cases %}
             <tr>
-                <th style="width: 100px;">Case ID</th>
-                <th style="width: 200px;">Name</th>
-                <th>Beschreibung</th>
-                <th style="width: 120px;">Status</th>
-            </tr>
-            {% for case in set.testcases %}
-            <tr>
-                <td>{{ case.id }}</td>
+                <td>{{ case.case_id }}</td>
                 <td>{{ case.name }}</td>
                 <td>{{ case.info }}</td>
                 <td>{{ case.status }}</td>

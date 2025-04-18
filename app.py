@@ -5,7 +5,6 @@ from auftrag import auftrag_bp
 from event_status_update import status_bp
 from time_utils import gruppiere_events_nach_auftrag
 import json
-import psycopg2
 from sqlalchemy import text
 
 app = Flask(__name__)
@@ -36,30 +35,48 @@ def admin():
 def auftrag_detail(auftrag_id):
     events = TriggerEvent.query.filter_by(auftrag_id=auftrag_id).order_by(TriggerEvent.execute_at).all()
 
-    # Lade testsets.json
+    # Lade alle Testresultate zu diesem Auftrag aus der DB
+    with db.engine.connect() as conn:
+        results = conn.execute(
+            text("SELECT case_id, status FROM test_results WHERE auftrag_id = :aid"),
+            {"aid": auftrag_id}
+        ).fetchall()
+
+    # Erstelle Dictionary: case_id → status
+    result_map = {r.case_id: r.status for r in results}
+
+    # Lade Testsets aus JSON-Datei
     with open("testsets.json", "r") as f:
         testsets_data = json.load(f)
 
-    # Extrahiere gewählte Testsets (nur von run-test Events)
+    # Extrahiere gewählte Testsets aus Events (z. B. run-test)
     testset_namen = []
     for e in events:
         if e.type == "run-test" and e.testsets:
             testset_namen = e.testsets
             break
 
-    # Lade Testergebnisse aus Datenbank
-    result_map = {}
-    with db.engine.connect() as conn:
-        result = conn.execute(text("SELECT case_id, status FROM test_results WHERE auftrag_id = :aid"), {"aid": auftrag_id})
-        for row in result:
-            result_map[row.case_id] = row.status
-
     # Erstelle detail-Objekt für die Anzeige
     details = []
     for testset_name in testset_namen:
-        cases = testsets_data.get(testset_name, [])
-        for case in cases:
-            case["status"] = result_map.get(case["id"], "-")  # z. B. "succeeded" oder "-"
+        raw_cases = testsets_data.get(testset_name, [])
+        cases = []
+
+        for raw_case in raw_cases:
+            # Wenn raw_case bereits ein Dict ist
+            if isinstance(raw_case, dict):
+                cid = raw_case.get("id", "")
+                raw_case["status"] = result_map.get(cid, "-")
+                cases.append(raw_case)
+            else:
+                # Fallback: raw_case ist nur ein String
+                cases.append({
+                    "id": raw_case,
+                    "name": raw_case,
+                    "info": "",
+                    "status": result_map.get(raw_case, "-")
+                })
+
         details.append({
             "name": testset_name,
             "testcases": cases

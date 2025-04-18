@@ -6,7 +6,6 @@
         body { font-family: Arial; margin: 40px; }
         h1 { color: purple; }
         h2 { margin-top: 40px; }
-        h3 { margin-top: 30px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { border: 1px solid #999; padding: 8px; text-align: left; }
         th { background-color: #eee; }
@@ -14,9 +13,6 @@
         .status-triggered { background-color: #fcbf49; }
         .status-done { background-color: #8ac926; }
         a { font-weight: bold; color: purple; }
-        .col-case-id { width: 100px; }
-        .col-case-name { width: 250px; }
-        .col-case-info { width: auto; }
     </style>
 </head>
 <body>
@@ -42,26 +38,24 @@
     </table>
 
     <h2>Durchgeführte Testsets & Testcases</h2>
-    {% for set in details %}
-    <h3>{{ set.name.upper() }}</h3>
-    <table>
-        <tr>
-            <th>Case ID</th>
-            <th>Name</th>
-            <th>Beschreibung</th>
-            <th>Status</th>
-        </tr>
-        {% for case in set.testcases %}
-        <tr>
-            <td>{{ case.id }}</td>
-            <td>{{ case.name }}</td>
-            <td>{{ case.info }}</td>
-            <td>{{ case.status }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-{% endfor %}
 
+    {% for set in details %}
+        <h3>{{ set.name | upper }}</h3>
+        <table>
+            <tr>
+                <th style="width: 100px;">Case ID</th>
+                <th style="width: 200px;">Name</th>
+                <th>Beschreibung</th>
+                <th style="width: 120px;">Status</th>
+            </tr>
+            {% for case in set.testcases %}
+            <tr>
+                <td>{{ case.id }}</td>
+                <td>{{ case.name }}</td>
+                <td>{{ case.info }}</td>
+                <td>{{ case.status }}</td>
+            </tr>
+            {% endfor %}
         </table>
     {% endfor %}
 </body>

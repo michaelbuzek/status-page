@@ -1,0 +1,62 @@
+{
+  "wlan": {
+    "info": "wlan tests innerhalb vom lan",
+    "cases": [
+      {
+        "id": "c_0001",
+        "name": "wlan_zu_router",
+        "info": "testet von wlan box zu router"
+      },
+      {
+        "id": "c_0002",
+        "name": "wlan_zu_wlan",
+        "info": "testet von router zu wlan"
+      },
+      {
+        "id": "c_0003",
+        "name": "wlan_id",
+        "info": "liest wlan id aus"
+      }
+    ]
+  },
+  "performance": {
+    "info": "testet den speed im lan und wan",
+    "cases": [
+      {
+        "id": "c_0004",
+        "name": "von_router_zu_pc",
+        "info": "testet speed"
+      },
+      {
+        "id": "c_0005",
+        "name": "von_pc_zu_router",
+        "info": "testet speed zu router"
+      },
+      {
+        "id": "c_0006",
+        "name": "von_router_zu_server",
+        "info": "testet speedserver up"
+      },
+      {
+        "id": "c_0007",
+        "name": "von_server_zu_router",
+        "info": "testet speedserver down"
+      }
+    ]
+  },
+  "security": {
+    "info": "security checks",
+    "cases": [
+      {
+        "id": "c_0008",
+        "name": "portscan_udp",
+        "info": "testet offene ports udp"
+      },
+      {
+        "id": "c_0009",
+        "name": "portscan_tcp",
+        "info": "testet offene ports tcp"
+      }
+    ]
+  }
+}

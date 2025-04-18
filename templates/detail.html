@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Details Auftrag {{ auftrag_id }}</title>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        h1 { color: purple; }
+        h2 { margin-top: 40px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #999; padding: 8px; text-align: left; }
+        th { background-color: #eee; }
+        .status-open { background-color: #f4a261; }
+        .status-triggered { background-color: #fcbf49; }
+        .status-done { background-color: #8ac926; }
+        a { font-weight: bold; color: purple; }
+    </style>
+</head>
+<body>
+    <h1>Auftrag {{ auftrag_id }}</h1>
+    <a href="/">← zurück zur Übersicht</a>
+
+    <h2>Testzeitpunkte</h2>
+    <table>
+        <tr>
+            <th>Typ</th>
+            <th>Execute At</th>
+            <th>Status</th>
+            <th>Report</th>
+        </tr>
+        {% for e in events %}
+        <tr>
+            <td>{{ e.type }}</td>
+            <td>{{ e.execute_at }}</td>
+            <td class="status-{{ e.status }}">{{ e.status }}</td>
+            <td>{{ e.report_url or '-' }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Durchgeführte Testsets & Testcases</h2>
+    {% for setname, details in testsets.items() %}
+        <h3>{{ setname | upper }} – {{ details.info }}</h3>
+        <table>
+            <tr>
+                <th>Case ID</th>
+                <th>Name</th>
+                <th>Beschreibung</th>
+            </tr>
+            {% for case in details.cases %}
+            <tr>
+                <td>{{ case.id }}</td>
+                <td>{{ case.name }}</td>
+                <td>{{ case.info }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endfor %}
+</body>
+</html>

@@ -1,106 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Details für Auftrag {{ auftrag_id }}</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-        }
-        h1, h2 {
-            color: purple;
-        }
-        a {
-            color: purple;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-bottom: 30px;
-        }
-        th, td {
-            border: 1px solid #aaa;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #eee;
-        }
-        .status-open {
-            background-color: #f4a261;
-        }
-        .status-triggered {
-            background-color: #f4a261;
-        }
-        .testcase-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        .testcase-table th, .testcase-table td {
-            border: 1px solid #aaa;
-            padding: 6px;
-            text-align: left;
-        }
-        .testcase-table th {
-            background-color: #eee;
-        }
-        .testcase-table .id-col {
-            width: 100px;
-        }
-        .testcase-table .name-col {
-            width: 250px;
-        }
-        .testcase-table .desc-col {
-            width: auto;
-        }
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1, h2, h3 { color: #5e2ca5; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .status-triggered { background-color: #f4a261; }
+        a { color: #5e2ca5; font-weight: bold; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .back-link { margin-top: 20px; display: inline-block; }
+        .section-title { margin-top: 40px; }
     </style>
 </head>
 <body>
     <h1>Auftrag {{ auftrag_id }}</h1>
-    <p><a href="/">← zurück zur Übersicht</a></p>
+    <a class="back-link" href="/">← zurück zur Übersicht</a>
 
-    <h2>Testzeitpunkte</h2>
+    <h2 class="section-title">Testzeitpunkte</h2>
     <table>
-        <tr>
-            <th>Typ</th>
-            <th>Execute At</th>
-            <th>Status</th>
-            <th>Report</th>
-        </tr>
-        {% for e in events %}
-        <tr>
-            <td>{{ e.type }}</td>
-            <td>{{ e.execute_at }}</td>
-            <td class="status-{{ e.status }}">{{ e.status }}</td>
-            <td>{{ e.report_url or "-" }}</td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Typ</th>
+                <th>Execute At</th>
+                <th>Status</th>
+                <th>Report</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+            <tr>
+                <td>{{ event.type }}</td>
+                <td>{{ event.execute_at }}</td>
+                <td class="status-{{ event.status }}">{{ event.status }}</td>
+                <td>{{ event.report_url or "-" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 
-    <h2>Durchgeführte Testsets & Testcases</h2>
+    <h2 class="section-title">Durchgeführte Testsets & Testcases</h2>
     {% for setname, cases in testsets.items() %}
-        <h3>{{ setname.upper() }} – {{ cases[0].set_info }}</h3>
-        <table class="testcase-table">
-            <thead>
-                <tr>
-                    <th class="id-col">Case ID</th>
-                    <th class="name-col">Name</th>
-                    <th class="desc-col">Beschreibung</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for case in cases %}
-                <tr>
-                    <td class="id-col">{{ case.id }}</td>
-                    <td class="name-col">{{ case.name }}</td>
-                    <td class="desc-col">{{ case.info }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {% if cases|length > 0 %}
+            <h3>{{ setname.upper() }} – {{ cases[0].set_info }}</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 120px;">Case ID</th>
+                        <th style="width: 240px;">Name</th>
+                        <th>Beschreibung</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for case in cases %}
+                    <tr>
+                        <td>{{ case.case_id }}</td>
+                        <td>{{ case.case_name }}</td>
+                        <td>{{ case.case_info }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
     {% endfor %}
 </body>
 </html>

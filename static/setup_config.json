@@ -1,0 +1,19 @@
+{
+  "router3": {
+    "setup_name": "iMac",
+    "base_url": "http://303.internet-box.ch:5001",
+    "testsets": {
+      "wlan": "/wlan-test-set",
+      "performance": "/performance-test-set",
+      "ping": "/ping"
+    }
+  },
+  "router4": {
+    "setup_name": "MiniMac",
+    "base_url": "http://304.internet-box.ch:5001",
+    "testsets": {
+      "wlan": "/wlan-test-set",
+      "performance": "/performance-test-set"
+    }
+  }
+}

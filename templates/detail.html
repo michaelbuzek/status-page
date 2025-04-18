@@ -1,70 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <title>Details für Auftrag {{ auftrag_id }}</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        h1, h2, h3 { color: #5e2ca5; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .status-triggered { background-color: #f4a261; }
-        a { color: #5e2ca5; font-weight: bold; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .back-link { margin-top: 20px; display: inline-block; }
-        .section-title { margin-top: 40px; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        h1 {
+            color: purple;
+        }
+        a {
+            color: purple;
+            text-decoration: none;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #eaeaea;
+        }
+        .section-title {
+            margin-top: 40px;
+        }
+        .status-triggered {
+            background-color: #f4a261;
+        }
+        .testset-table {
+            margin-bottom: 50px;
+        }
+        .col-id {
+            width: 100px;
+        }
+        .col-desc {
+            width: 50%;
+        }
     </style>
 </head>
 <body>
+
     <h1>Auftrag {{ auftrag_id }}</h1>
-    <a class="back-link" href="/">← zurück zur Übersicht</a>
+    <p><a href="/">← zurück zur Übersicht</a></p>
 
     <h2 class="section-title">Testzeitpunkte</h2>
     <table>
-        <thead>
-            <tr>
-                <th>Typ</th>
-                <th>Execute At</th>
-                <th>Status</th>
-                <th>Report</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for event in events %}
-            <tr>
-                <td>{{ event.type }}</td>
-                <td>{{ event.execute_at }}</td>
-                <td class="status-{{ event.status }}">{{ event.status }}</td>
-                <td>{{ event.report_url or "-" }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+        <tr>
+            <th>Typ</th>
+            <th>Execute At</th>
+            <th>Status</th>
+            <th>Report</th>
+        </tr>
+        {% for event in events %}
+        <tr>
+            <td>{{ event.type }}</td>
+            <td>{{ event.execute_at }}</td>
+            <td class="status-{{ event.status }}">{{ event.status }}</td>
+            <td>{{ event.report_url if event.report_url else '-' }}</td>
+        </tr>
+        {% endfor %}
     </table>
 
     <h2 class="section-title">Durchgeführte Testsets & Testcases</h2>
+
     {% for setname, cases in testsets.items() %}
         {% if cases|length > 0 %}
             <h3>{{ setname.upper() }} – {{ cases[0].set_info }}</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 120px;">Case ID</th>
-                        <th style="width: 240px;">Name</th>
-                        <th>Beschreibung</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for case in cases %}
-                    <tr>
-                        <td>{{ case.case_id }}</td>
-                        <td>{{ case.case_name }}</td>
-                        <td>{{ case.case_info }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        {% else %}
+            <h3>{{ setname.upper() }}</h3>
         {% endif %}
+
+        <table class="testset-table">
+            <tr>
+                <th class="col-id">Case ID</th>
+                <th>Name</th>
+                <th class="col-desc">Beschreibung</th>
+            </tr>
+            {% for case in cases %}
+            <tr>
+                <td>{{ case.case_id }}</td>
+                <td>{{ case.case_name }}</td>
+                <td>{{ case.case_info }}</td>
+            </tr>
+            {% endfor %}
+        </table>
     {% endfor %}
+
 </body>
 </html>

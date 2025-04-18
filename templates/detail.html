@@ -1,23 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Details Auftrag {{ auftrag_id }}</title>
+    <title>Details für Auftrag {{ auftrag_id }}</title>
     <style>
-        body { font-family: Arial; margin: 40px; }
-        h1 { color: purple; }
-        h2 { margin-top: 40px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #999; padding: 8px; text-align: left; }
-        th { background-color: #eee; }
-        .status-open { background-color: #f4a261; }
-        .status-triggered { background-color: #fcbf49; }
-        .status-done { background-color: #8ac926; }
-        a { font-weight: bold; color: purple; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        h1, h2 {
+            color: purple;
+        }
+        a {
+            color: purple;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        th, td {
+            border: 1px solid #aaa;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #eee;
+        }
+        .status-open {
+            background-color: #f4a261;
+        }
+        .status-triggered {
+            background-color: #f4a261;
+        }
+        .testcase-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .testcase-table th, .testcase-table td {
+            border: 1px solid #aaa;
+            padding: 6px;
+            text-align: left;
+        }
+        .testcase-table th {
+            background-color: #eee;
+        }
+        .testcase-table .id-col {
+            width: 100px;
+        }
+        .testcase-table .name-col {
+            width: 250px;
+        }
+        .testcase-table .desc-col {
+            width: auto;
+        }
     </style>
 </head>
 <body>
     <h1>Auftrag {{ auftrag_id }}</h1>
-    <a href="/">← zurück zur Übersicht</a>
+    <p><a href="/">← zurück zur Übersicht</a></p>
 
     <h2>Testzeitpunkte</h2>
     <table>
@@ -32,27 +75,31 @@
             <td>{{ e.type }}</td>
             <td>{{ e.execute_at }}</td>
             <td class="status-{{ e.status }}">{{ e.status }}</td>
-            <td>{{ e.report_url or '-' }}</td>
+            <td>{{ e.report_url or "-" }}</td>
         </tr>
         {% endfor %}
     </table>
 
     <h2>Durchgeführte Testsets & Testcases</h2>
-    {% for setname, details in testsets.items() %}
-        <h3>{{ setname | upper }} – {{ details.info }}</h3>
-        <table>
-            <tr>
-                <th>Case ID</th>
-                <th>Name</th>
-                <th>Beschreibung</th>
-            </tr>
-            {% for case in details.cases %}
-            <tr>
-                <td>{{ case.id }}</td>
-                <td>{{ case.name }}</td>
-                <td>{{ case.info }}</td>
-            </tr>
-            {% endfor %}
+    {% for setname, cases in testsets.items() %}
+        <h3>{{ setname.upper() }} – {{ cases[0].set_info }}</h3>
+        <table class="testcase-table">
+            <thead>
+                <tr>
+                    <th class="id-col">Case ID</th>
+                    <th class="name-col">Name</th>
+                    <th class="desc-col">Beschreibung</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for case in cases %}
+                <tr>
+                    <td class="id-col">{{ case.id }}</td>
+                    <td class="name-col">{{ case.name }}</td>
+                    <td class="desc-col">{{ case.info }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
     {% endfor %}
 </body>

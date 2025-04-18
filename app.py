@@ -1,4 +1,4 @@
-#version 18april
+#version 18aprils
 from flask import Flask, render_template
 from models import db, TriggerEvent
 from api import api_bp

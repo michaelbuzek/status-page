@@ -29,6 +29,7 @@
             <th>Run-Test</th>
             <th>Status</th>
             <th>Report</th>
+            <th>Details</th>
         </tr>
         {% for aid, data in auftraege.items() %}
         <tr>
@@ -42,7 +43,14 @@
             <td class="status-{{ data['run-test'].status if data.get('run-test') else 'open' }}">
                 {{ data['run-test'].status if data.get('run-test') else 'open' }}
             </td>
-            <td>{{ data['run-test'].report_url if data.get('run-test') else '-' }}</td>
+            <td>
+                {% if data['run-test'].report_url %}
+                    <a href="{{ data['run-test'].report_url }}" target="_blank">PDF</a>
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td><a href="/auftrag/{{ aid }}">Details</a></td>
         </tr>
         {% endfor %}
     </table>

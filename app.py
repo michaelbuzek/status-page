@@ -29,5 +29,11 @@ def admin():
     auftraege = gruppiere_events_nach_auftrag(events)
     return render_template("admin.html", auftraege=auftraege)
 
+@app.route("/auftrag/<int:auftrag_id>")
+def auftrag_detail(auftrag_id):
+    events = TriggerEvent.query.filter_by(auftrag_id=auftrag_id).order_by(TriggerEvent.execute_at).all()
+    return render_template("auftrag_detail.html", auftrag_id=auftrag_id, events=events)
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

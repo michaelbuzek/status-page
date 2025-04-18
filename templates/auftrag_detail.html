@@ -1,0 +1,52 @@
+<!-- templates/auftrag_detail.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Details für Auftrag {{ auftrag_id }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f0f0f0; }
+        a { text-decoration: none; color: #0066cc; }
+    </style>
+</head>
+<body>
+    <h2>Details für Auftrag <code>{{ auftrag_id }}</code></h2>
+    <table>
+        <tr>
+            <th>Typ</th>
+            <th>Geplant</th>
+            <th>Setup</th>
+            <th>Router</th>
+            <th>Firmware</th>
+            <th>Status</th>
+            <th>Testsets</th>
+            <th>Log</th>
+            <th>Report</th>
+        </tr>
+        {% for e in events %}
+        <tr>
+            <td>{{ e.type }}</td>
+            <td>{{ e.execute_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>{{ e.setup }}</td>
+            <td>{{ e.router }}</td>
+            <td>{{ e.firmware }}</td>
+            <td>{{ e.status }}</td>
+            <td>{{ e.testsets | join(", ") }}</td>
+            <td>{{ e.result_log or "-" }}</td>
+            <td>
+                {% if e.report_url %}
+                    <a href="{{ e.report_url }}" target="_blank">PDF</a>
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p><a href="/">Zurück zur Übersicht</a></p>
+</body>
+</html>

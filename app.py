@@ -4,6 +4,7 @@ from models import db, TriggerEvent
 from api import api_bp
 from auftrag import auftrag_bp
 from event_status_update import status_bp
+from analytics import analytics_bp
 from time_utils import gruppiere_events_nach_auftrag
 import json
 import psycopg2
@@ -19,6 +20,8 @@ with app.app_context():
 app.register_blueprint(api_bp)
 app.register_blueprint(auftrag_bp)
 app.register_blueprint(status_bp)
+app.register_blueprint(analytics_bp)
+
 
 @app.route("/")
 def index():
@@ -69,3 +72,5 @@ def auftrag_detail(auftrag_id):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
+

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial; margin: 40px; }
+        h1 { color: purple; }
+        canvas { max-width: 700px; }
+        a { font-weight: bold; color: purple; }
+    </style>
+</head>
+<body>
+    <h1>Analytics Dashboard</h1>
+    <a href="/">← zurück</a>
+
+    <h2>Router Nutzung</h2>
+    <canvas id="routerChart"></canvas>
+
+    <script>
+        const ctx = document.getElementById("routerChart");
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: {{ router_labels|tojson }},
+                datasets: [{
+                    label: "Verwendet in Aufträgen",
+                    data: {{ router_values|tojson }},
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

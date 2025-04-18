@@ -20,7 +20,7 @@ with app.app_context():
 app.register_blueprint(api_bp)
 app.register_blueprint(auftrag_bp)
 app.register_blueprint(status_bp)
-app.register_blueprint(analytics_bp)
+#app.register_blueprint(analytics_bp)
 
 
 @app.route("/")

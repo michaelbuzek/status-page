@@ -34,9 +34,12 @@ def admin():
 def auftrag_detail(auftrag_id):
     events = TriggerEvent.query.filter_by(auftrag_id=auftrag_id).order_by(TriggerEvent.execute_at).all()
 
-    # Lade Testsets aus JSON
+    # testsets.json laden
     with open("testsets.json", "r") as f:
-        testsets_data = json.load(f)
+        testsets = json.load(f)
+
+    return render_template("detail.html", auftrag_id=auftrag_id, events=events, testsets=testsets)
+
 
     # Extrahiere gewählte Testsets aus Events (z. B. run-test)
     testset_namen = []

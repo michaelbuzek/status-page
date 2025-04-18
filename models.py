@@ -18,3 +18,11 @@ class TriggerEvent(db.Model):
     report_url = db.Column(db.Text)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
+
+class TestResult(db.Model):
+    __tablename__ = "test_results"
+
+    id = db.Column(db.Integer, primary_key=True)
+    auftrag_id = db.Column(db.Integer, nullable=False)
+    case_id = db.Column(db.String, nullable=False)
+    status = db.Column(db.String, nullable=False)  # z. B. 'succeeded', 'failed'

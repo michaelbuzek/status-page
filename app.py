@@ -4,7 +4,7 @@ from models import db, TriggerEvent
 from api import api_bp
 from auftrag import auftrag_bp
 from event_status_update import status_bp
-from analytics import analytics_bp
+#from analytics import analytics_bp
 from time_utils import gruppiere_events_nach_auftrag
 import json
 import psycopg2

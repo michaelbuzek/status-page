@@ -5,6 +5,8 @@ from auftrag import auftrag_bp
 from event_status_update import status_bp
 from time_utils import gruppiere_events_nach_auftrag
 import json
+import psycopg2
+from sqlalchemy import text
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://meineapiuser:gk2u1YcUpTDkqVlhZY0U0qAtGcBWxXcD@dpg-cvrvbcur433s73eaj0k0-a.oregon-postgres.render.com/meineapidb"
@@ -34,26 +36,34 @@ def admin():
 def auftrag_detail(auftrag_id):
     events = TriggerEvent.query.filter_by(auftrag_id=auftrag_id).order_by(TriggerEvent.execute_at).all()
 
-    # testsets.json laden
+    # Lade testsets.json
     with open("testsets.json", "r") as f:
-        testsets = json.load(f)
+        testsets_data = json.load(f)
 
-    return render_template("detail.html", auftrag_id=auftrag_id, events=events, testsets=testsets)
-
-
-    # Extrahiere gewählte Testsets aus Events (z. B. run-test)
+    # Extrahiere Testsets aus "run-test"-Event
     testset_namen = []
     for e in events:
         if e.type == "run-test" and e.testsets:
             testset_namen = e.testsets
             break
 
-    # Baue Detail-Daten für Anzeige
+    # Lade Testergebnisse aus DB
+    result_query = text("SELECT case_id, status FROM test_results WHERE auftrag_id = :aid")
+    conn = db.engine.connect()
+    result_rows = conn.execute(result_query, {"aid": auftrag_id}).fetchall()
+    conn.close()
+
+    result_map = {row.case_id: row.status for row in result_rows}
+
+    # Kombiniere Testcases mit Status
     details = []
-    for testset_name in testset_namen:
-        cases = testsets_data.get(testset_name, [])
+    for setname in testset_namen:
+        cases = testsets_data.get(setname, [])
+        for case in cases:
+            case["status"] = result_map.get(case["id"], "-")
         details.append({
-            "name": testset_name,
+            "name": setname,
+            "info": cases[0]["set_info"] if cases else "",
             "testcases": cases
         })
 

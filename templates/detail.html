@@ -42,21 +42,26 @@
     </table>
 
     <h2>Durchgeführte Testsets & Testcases</h2>
-    {% for setname, details in testsets.items() %}
-        <h3>{{ setname | upper }} – {{ details.info }}</h3>
-        <table>
-            <tr>
-                <th class="col-case-id">Case ID</th>
-                <th class="col-case-name">Name</th>
-                <th class="col-case-info">Beschreibung</th>
-            </tr>
-            {% for case in details.cases %}
-            <tr>
-                <td>{{ case.id }}</td>
-                <td>{{ case.name }}</td>
-                <td>{{ case.info }}</td>
-            </tr>
-            {% endfor %}
+    {% for set in details %}
+    <h3>{{ set.name.upper() }}</h3>
+    <table>
+        <tr>
+            <th>Case ID</th>
+            <th>Name</th>
+            <th>Beschreibung</th>
+            <th>Status</th>
+        </tr>
+        {% for case in set.testcases %}
+        <tr>
+            <td>{{ case.id }}</td>
+            <td>{{ case.name }}</td>
+            <td>{{ case.info }}</td>
+            <td>{{ case.status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endfor %}
+
         </table>
     {% endfor %}
 </body>

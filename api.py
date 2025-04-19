@@ -65,3 +65,27 @@ def speichere_testresultate():
 
     db.session.commit()
     return jsonify({"message": f"{len(results)} Resultate gespeichert für Auftrag {auftrag_id}."}), 200
+
+# 🔍 Events zu bestimmtem Auftrag abrufen
+@api_bp.route('/api/events', methods=['GET'])
+def list_events_by_auftrag():
+    auftrag_id = request.args.get("auftrag_id")
+    if not auftrag_id:
+        return jsonify({"error": "auftrag_id fehlt"}), 400
+
+    events = TriggerEvent.query.filter_by(auftrag_id=auftrag_id).order_by(TriggerEvent.execute_at).all()
+    return jsonify([
+        {
+            "id": e.id,
+            "auftrag_id": e.auftrag_id,
+            "type": e.type,
+            "execute_at": e.execute_at.isoformat(),
+            "setup": e.setup,
+            "firmware": e.firmware,
+            "router": e.router,
+            "testsets": e.testsets,
+            "status": e.status,
+            "result_log": e.result_log,
+            "report_url": e.report_url
+        } for e in events
+    ])
